@@ -1,20 +1,17 @@
-pub fn execute() {
+pub fn execute() -> i32 {
     let input = include_str!("../input/day1.txt");
     //let mut total = 0;
 
     let mut left_v = Vec::new();
     let mut right_v = Vec::new();
 
-    for line in input.lines() {
-        // split line by whitespace
-        let numbers: Vec<i32> = line
-            .split_whitespace()
-            .map(|x| x.parse().unwrap())
-            .collect();
-
-        // get absolute difference between max and min
-        let left = numbers[0];
-        let right = numbers[1];
+    for (i, line) in input.lines().enumerate() {
+        let left: i32 = line[0..5]
+            .parse()
+            .unwrap_or_else(|_| panic!("Failed to parse left: {}", i));
+        let right: i32 = line[8..]
+            .parse()
+            .unwrap_or_else(|_| panic!("Failed to parse right: {}", i));
 
         left_v.push(left);
         right_v.push(right);
@@ -24,8 +21,8 @@ pub fn execute() {
     }
 
     // sort the vectors
-    left_v.sort();
-    right_v.sort();
+    left_v.sort_unstable();
+    right_v.sort_unstable();
 
     let mut total2 = 0;
 
@@ -38,5 +35,6 @@ pub fn execute() {
     }
 
     //println!("{}", total);
-    println!("correct: {}", total2);
+    //println!("correct: {}", total2);
+    total2
 }

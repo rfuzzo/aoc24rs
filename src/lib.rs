@@ -8,17 +8,22 @@ extern crate test;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::Bencher;
 
     #[test]
     fn test_day1() {
-        day1::execute();
+        assert!(day1::execute() == 1603498);
     }
 
     #[test]
     fn test_day2() {
         assert!(day2::execute() == 589);
     }
+}
+
+#[cfg(test)]
+mod benches {
+    use super::*;
+    use test::Bencher;
 
     #[bench]
     fn bench_day2(b: &mut Bencher) {
