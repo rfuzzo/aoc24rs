@@ -1,6 +1,6 @@
 pub fn execute() {
     let input = include_str!("../input/day1.txt");
-    let mut total = 0;
+    //let mut total = 0;
 
     let mut left_v = Vec::new();
     let mut right_v = Vec::new();
@@ -19,8 +19,8 @@ pub fn execute() {
         left_v.push(left);
         right_v.push(right);
 
-        let diff = (left - right).abs();
-        total += diff;
+        //let diff = (left - right).abs();
+        //total += diff;
     }
 
     // sort the vectors
@@ -37,6 +37,6 @@ pub fn execute() {
         total2 += d;
     }
 
-    println!("{}", total);
+    //println!("{}", total);
     println!("correct: {}", total2);
 }

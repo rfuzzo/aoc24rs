@@ -1,9 +1,9 @@
-pub fn execute() {
+pub fn execute() -> i32 {
     let input = include_str!("../input/day2.txt");
 
     let mut safe = 0;
 
-    for (i, line) in input.lines().enumerate() {
+    for line in input.lines() {
         // split line by whitespace
         let numbers: Vec<i32> = line
             .split_whitespace()
@@ -11,24 +11,25 @@ pub fn execute() {
             .collect();
 
         // debug stuff
-        let mut reason = "".to_owned();
+        //let mut reason = "".to_owned();
 
-        let error_index = check_line(numbers.clone(), None, &mut reason);
+        // first check
+        if let Some(ind) = check_line(numbers.clone(), None) {
+            //println!("#{};{} ({}): {}", i, ind, line, reason);
 
-        if let Some(ind) = error_index {
-            println!("#{};{} ({}): {}", i, ind, line, reason);
-
-            // for until numbers size
+            // ignore indices and check again
             let mut found = false;
-            for j in 0..numbers.len() {
-                if check_line(numbers.clone(), Some(j), &mut reason).is_none() {
+            let min = 0.min(ind - 1); // 0
+            let max = ind + 1; //numbers.len();
+            for j in min..max {
+                if check_line(numbers.clone(), Some(j)).is_none() {
                     found = true;
                     break;
                 }
             }
 
             if !found {
-                println!("\tno safe line found");
+                //println!("\tno safe line found");
             } else {
                 safe += 1;
             }
@@ -37,26 +38,27 @@ pub fn execute() {
         }
     }
 
-    println!("{}", safe);
+    //println!("{}", safe);
+    safe
 }
 
 fn check_line(
     mut numbers: Vec<i32>,
     ignore_index: Option<usize>,
-    reason: &mut String,
+    //reason: &mut String,
 ) -> Option<usize> {
     if let Some(ignored) = ignore_index {
-        println!("ignoring index {}", ignored);
+        //println!("ignoring index {}", ignored);
 
         // remove from numbers
         numbers.remove(ignored);
     }
 
     // check if safe
-    let mut last_number = numbers.first().unwrap();
-    let mut increasing = None;
+    let mut last_number = numbers[0];
+    let increasing = numbers[1] > last_number;
 
-    for (j, n) in numbers.iter().enumerate() {
+    for (j, n) in numbers.into_iter().enumerate() {
         // ignore first
         if j == 0 {
             continue;
@@ -64,22 +66,21 @@ fn check_line(
 
         // check difference to last number
         let diff = n - last_number;
-        if diff == 0 {
-            *reason = "zero difference".to_owned();
-            return Some(j);
-        }
+        // if diff == 0 {
+        //     //*reason = "zero difference".to_owned();
+        //     return Some(j);
+        // }
 
         // check if always either increasing or decreasing
-        if increasing.is_none() {
-            increasing = Some(diff > 0);
-        } else if increasing.unwrap() != (diff > 0) {
-            *reason = "not always increasing or decreasing".to_owned();
+        if increasing != (diff > 0) {
+            //*reason = "not always increasing or decreasing".to_owned();
             return Some(j);
         }
 
         // check if difference is at least one and at most three.
-        if diff.abs() > 3 || diff.abs() < 1 {
-            *reason = "difference not between 1 and 3".to_owned();
+        let abs = diff.abs();
+        if !(1..=3).contains(&abs) {
+            //*reason = "difference not between 1 and 3".to_owned();
             return Some(j);
         }
 
