@@ -1,3 +1,5 @@
+use aoc24rs::day1::execute;
+
 fn main() {
-    aoc24rs::day2();
+    execute();
 }
