@@ -1,5 +1,5 @@
-use aoc24rs::day1::execute;
+use aoc24rs::day2::execute;
 
 fn main() {
-    execute();
+    println!("{}", execute());
 }

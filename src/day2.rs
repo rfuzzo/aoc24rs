@@ -17,12 +17,11 @@ pub fn execute() -> i32 {
         if let Some(ind) = check_line(numbers.clone(), None) {
             //println!("#{};{} ({}): {}", i, ind, line, reason);
 
-            // ignore indices and check again
+            // try -2,-1 and the faulty index and check again
             let mut found = false;
-            let min = 0.min(ind - 1); // 0
-            let max = ind + 1; //numbers.len();
-            for j in min..max {
-                if check_line(numbers.clone(), Some(j)).is_none() {
+            for j in 0..=2.min(ind) {
+                let idx = (ind - j).clamp(0, numbers.len() - 1);
+                if check_line(numbers.clone(), Some(idx)).is_none() {
                     found = true;
                     break;
                 }
