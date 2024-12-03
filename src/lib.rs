@@ -2,6 +2,7 @@
 
 pub mod day1;
 pub mod day2;
+pub mod day3;
 
 extern crate test;
 
@@ -18,6 +19,12 @@ mod tests {
     fn test_day2() {
         assert!(day2::execute() == 589);
     }
+
+    #[test]
+    fn test_day3() {
+        assert!(day3::execute(false) == 174960292);
+        assert!(day3::execute(true) == 56275602);
+    }
 }
 
 #[cfg(test)]
@@ -33,5 +40,10 @@ mod benches {
     #[bench]
     fn bench_day1(b: &mut Bencher) {
         b.iter(day1::execute);
+    }
+
+    #[bench]
+    fn bench_day3(b: &mut Bencher) {
+        b.iter(|| day3::execute(true));
     }
 }
