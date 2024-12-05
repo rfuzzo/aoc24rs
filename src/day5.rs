@@ -88,6 +88,7 @@ pub fn execute(is_part_two: bool) -> usize {
     }
 
     // part 2
+    //let mut max_iterations = 0;
     let mut sum = 0;
     for idx in incorrect_updates_idx.iter() {
         let v = &updates[*idx];
@@ -97,8 +98,12 @@ pub fn execute(is_part_two: bool) -> usize {
         // we simply assume that no cycle is present and that the stable sort is possible
         let mut sorted = v.clone();
         let mut index = 0;
-        for _j in 1..100 {
-            let any_change = stable_topo_sort_inner(&edges, &mut sorted, &mut index);
+        //let mut fixed = false;
+        for _j in 1..3 {
+            //max_iterations = max_iterations.max(_j);
+
+            //let any_change = stable_topo_sort_inner(&edges, &mut sorted, &mut index);
+            let any_change = stable_topo_sort_opt2(&edges, &mut sorted, &mut index);
 
             // sort again
             if !any_change {
@@ -109,7 +114,7 @@ pub fn execute(is_part_two: bool) -> usize {
             }
         }
 
-        // checks
+        // //checks
         // if !fixed {
         //     println!("Error: Could not fix the incorrect update");
         // } else {
@@ -119,6 +124,8 @@ pub fn execute(is_part_two: bool) -> usize {
         //     }
         // }
     }
+
+    //println!("Max iterations: {}", max_iterations);
 
     //assert!(fixed_updates.len() == incorrect_updates_idx.len());
 
@@ -185,7 +192,7 @@ pub fn stable_topo_sort_inner(
     for i in 0..result.len() {
         for j in 0..i {
             let x = result[i];
-            let y = result[j];
+            let y: usize = result[j];
             if edges.contains(&(x, y)) {
                 let t = result[i].to_owned();
                 result.remove(i);
@@ -198,4 +205,37 @@ pub fn stable_topo_sort_inner(
         }
     }
     false
+}
+
+pub fn stable_topo_sort_opt2(
+    edges: &[(usize, usize)],
+    result: &mut Vec<usize>,
+    last_index: &mut usize,
+) -> bool {
+    // optimize B: only check edges
+    let mut b = false;
+    for (idx, edge) in edges.iter().enumerate() {
+        let i = edge.0;
+        let j = edge.1;
+
+        // let x = result[i];
+        // let y = result[j];
+
+        if let Some(idx_of_x) = result.iter().position(|f| *f == i) {
+            if let Some(idx_of_y) = result.iter().position(|f| *f == j) {
+                // if i not before j x should be before y
+                if idx_of_x > idx_of_y {
+                    let t = result[idx_of_x].to_owned();
+                    result.remove(idx_of_x);
+                    result.insert(idx_of_y, t);
+
+                    *last_index = idx;
+
+                    b = true;
+                }
+            }
+        }
+    }
+
+    b
 }
