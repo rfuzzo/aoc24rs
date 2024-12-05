@@ -4,6 +4,7 @@ pub mod day1;
 pub mod day2;
 pub mod day3;
 pub mod day4;
+pub mod day5;
 
 extern crate test;
 
@@ -33,6 +34,12 @@ mod tests {
         assert!(day4::execute(false) == 2557);
         assert!(day4::execute(true) == 1854);
     }
+
+    #[test]
+    fn test_day5() {
+        assert!(day5::execute(false) == 4609);
+        //assert!(day5::execute(true) == 1854);
+    }
 }
 
 #[cfg(test)]
@@ -40,28 +47,46 @@ mod benches {
     use super::*;
     use test::Bencher;
 
-    // #[bench]
-    // fn bench_day2(b: &mut Bencher) {
-    //     b.iter(day2::execute);
-    // }
+    /*
+    #[bench]
+    fn bench_day1p1(b: &mut Bencher) {
+        b.iter(|| day1::execute(false));
+    }
+    #[bench]
+    fn bench_day1p2(b: &mut Bencher) {
+        b.iter(|| day1::execute(true));
+    }
 
-    // #[bench]
-    // fn bench_day1(b: &mut Bencher) {
-    //     b.iter(|| day1::execute(true));
-    // }
+    #[bench]
+    fn bench_day2p2(b: &mut Bencher) {
+        b.iter(day2::execute);
+    }
 
-    // #[bench]
-    // fn bench_day3(b: &mut Bencher) {
-    //     b.iter(|| day3::execute(true));
-    // }
+    #[bench]
+    fn bench_day3p1(b: &mut Bencher) {
+        b.iter(|| day3::execute(false));
+    }
+    #[bench]
+    fn bench_day3p2(b: &mut Bencher) {
+        b.iter(|| day3::execute(true));
+    }
 
     #[bench]
     fn bench_day4p1(b: &mut Bencher) {
         b.iter(|| day4::execute(false));
     }
-
     #[bench]
     fn bench_day4p2(b: &mut Bencher) {
         b.iter(|| day4::execute(true));
     }
+     */
+
+    #[bench]
+    fn bench_day5p1(b: &mut Bencher) {
+        b.iter(|| day5::execute(false));
+    }
+    // #[bench]
+    // fn bench_day5p2(b: &mut Bencher) {
+    //     b.iter(|| day5::execute(true));
+    // }
 }
