@@ -38,7 +38,7 @@ mod tests {
     #[test]
     fn test_day5() {
         assert!(day5::execute(false) == 4609);
-        //assert!(day5::execute(true) == 1854);
+        assert!(day5::execute(true) == 5723);
     }
 }
 
@@ -48,45 +48,46 @@ mod benches {
     use test::Bencher;
 
     /*
-    #[bench]
-    fn bench_day1p1(b: &mut Bencher) {
-        b.iter(|| day1::execute(false));
-    }
-    #[bench]
-    fn bench_day1p2(b: &mut Bencher) {
-        b.iter(|| day1::execute(true));
-    }
+        #[bench]
+        fn bench_day1p1(b: &mut Bencher) {
+            b.iter(|| day1::execute(false));
+        }
+        #[bench]
+        fn bench_day1p2(b: &mut Bencher) {
+            b.iter(|| day1::execute(true));
+        }
 
-    #[bench]
-    fn bench_day2p2(b: &mut Bencher) {
-        b.iter(day2::execute);
-    }
+        #[bench]
+        fn bench_day2p2(b: &mut Bencher) {
+            b.iter(day2::execute);
+        }
 
-    #[bench]
-    fn bench_day3p1(b: &mut Bencher) {
-        b.iter(|| day3::execute(false));
-    }
-    #[bench]
-    fn bench_day3p2(b: &mut Bencher) {
-        b.iter(|| day3::execute(true));
-    }
+        #[bench]
+        fn bench_day3p1(b: &mut Bencher) {
+            b.iter(|| day3::execute(false));
+        }
+        #[bench]
+        fn bench_day3p2(b: &mut Bencher) {
+            b.iter(|| day3::execute(true));
+        }
 
-    #[bench]
-    fn bench_day4p1(b: &mut Bencher) {
-        b.iter(|| day4::execute(false));
-    }
-    #[bench]
-    fn bench_day4p2(b: &mut Bencher) {
-        b.iter(|| day4::execute(true));
-    }
-     */
+        #[bench]
+        fn bench_day4p1(b: &mut Bencher) {
+            b.iter(|| day4::execute(false));
+        }
+        #[bench]
+        fn bench_day4p2(b: &mut Bencher) {
+            b.iter(|| day4::execute(true));
+        }
+    */
 
     #[bench]
     fn bench_day5p1(b: &mut Bencher) {
         b.iter(|| day5::execute(false));
     }
-    // #[bench]
-    // fn bench_day5p2(b: &mut Bencher) {
-    //     b.iter(|| day5::execute(true));
-    // }
+
+    #[bench]
+    fn bench_day5p2(b: &mut Bencher) {
+        b.iter(|| day5::execute(true));
+    }
 }
