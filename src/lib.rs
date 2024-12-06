@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_day6() {
         assert!(day6::execute(false) == 5461);
-        //assert!(day6::execute(true) == 5723);
+        assert!(day6::execute(true) == 1836);
     }
 }
 
@@ -86,15 +86,25 @@ mod benches {
         fn bench_day4p2(b: &mut Bencher) {
             b.iter(|| day4::execute(true));
         }
+
+        #[bench]
+        fn bench_day5p1(b: &mut Bencher) {
+            b.iter(|| day5::execute(false));
+        }
+
+        #[bench]
+        fn bench_day5p2(b: &mut Bencher) {
+            b.iter(|| day5::execute(true));
+        }
     */
 
     #[bench]
-    fn bench_day5p1(b: &mut Bencher) {
-        b.iter(|| day5::execute(false));
+    fn bench_day6p1(b: &mut Bencher) {
+        b.iter(|| day6::execute(false));
     }
 
     #[bench]
-    fn bench_day5p2(b: &mut Bencher) {
-        b.iter(|| day5::execute(true));
+    fn bench_day6p2(b: &mut Bencher) {
+        b.iter(|| day6::execute(true));
     }
 }

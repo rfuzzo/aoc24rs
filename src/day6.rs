@@ -1,3 +1,5 @@
+use std::vec;
+
 const N: usize = 130;
 const OBSTACLE: u8 = b'#';
 const START: u8 = b'^';
@@ -18,10 +20,10 @@ struct SCursor {
 
 impl SCursor {
     fn is_inside(&self) -> bool {
-        self.pos.0 < N && self.pos.1 < N && self.pos.0 > 0 && self.pos.1 > 0
+        self.pos.0 < N - 1 && self.pos.1 < N - 1 && self.pos.0 > 0 && self.pos.1 > 0
     }
 
-    fn can_move(&self, grid: [[u8; 130]; 130]) -> bool {
+    fn can_move(&self, grid: &[[u8; 130]; 130]) -> bool {
         let check_pos = match self.dir {
             Direction::Up => {
                 // check if we can move up
@@ -72,9 +74,9 @@ impl SCursor {
     }
 
     // to string
-    fn debug(&self) -> String {
-        format!("({:?},{:?}) {:?}", self.pos.1 + 1, self.pos.0 + 1, self.dir)
-    }
+    // fn debug(&self) -> String {
+    //     format!("({:?},{:?}) {:?}", self.pos.1 + 1, self.pos.0 + 1, self.dir)
+    // }
 }
 
 pub fn execute(is_part_two: bool) -> usize {
@@ -83,7 +85,7 @@ pub fn execute(is_part_two: bool) -> usize {
     let input = include_bytes!("../input/day6.txt");
     let mut cnt = 0;
     let mut grid: [[u8; N]; N] = [[0; N]; N];
-    let mut start = (0, 0);
+    let mut start_pos = (0, 0);
     for c in input.iter() {
         // skip newline
         if c.is_ascii_control() {
@@ -96,21 +98,58 @@ pub fn execute(is_part_two: bool) -> usize {
         grid[x][y] = *c;
 
         if *c == START {
-            start = (x, y);
+            start_pos = (x, y);
         }
 
         cnt += 1;
     }
-
-    // walk
-    let mut cursor = SCursor {
-        pos: start,
+    //println!("Start: {:?}", cursor.debug());
+    let start = SCursor {
+        pos: start_pos,
         dir: Direction::Up,
     };
-    let mut visited = Vec::new();
-    visited.push(cursor.pos);
+    let visited = calculate_path(&grid, &start).unwrap(); // hacky but we can unwrap here since we know there is a solution
+    let mut visited_positions = visited
+        .iter()
+        .map(|f| f.pos)
+        .collect::<Vec<(usize, usize)>>();
+    visited_positions.sort();
+    visited_positions.dedup();
 
-    println!("Start: {:?}", cursor.debug());
+    let total = visited_positions.len();
+
+    if !is_part_two {
+        // only count unique positions
+        total
+    } else {
+        let mut wrapping_configurations_count = 0;
+        println!("Visited positions: {:?}", total);
+
+        for (i, p) in visited_positions.iter().enumerate() {
+            if *p == start.pos {
+                continue;
+            }
+
+            // replace p with obstacle
+            let mut test_grid = grid;
+            test_grid[p.0][p.1] = OBSTACLE;
+
+            let wrapping = calculate_path(&test_grid, &start).is_none();
+            if wrapping {
+                println!("{}/{}: {:?} is wrapping", i, total, p);
+                wrapping_configurations_count += 1;
+            } else {
+                println!("{}/{}: {:?} not wrapping", i, total, p);
+            }
+        }
+
+        wrapping_configurations_count
+    }
+}
+
+fn calculate_path(grid: &[[u8; 130]; 130], start: &SCursor) -> Option<Vec<SCursor>> {
+    let mut cursor = start.clone();
+    let mut visited = vec![cursor.clone()];
 
     while cursor.is_inside() {
         // check if we can move
@@ -122,12 +161,14 @@ pub fn execute(is_part_two: bool) -> usize {
             cursor.turn_right();
         }
 
-        if !visited.contains(&cursor.pos) {
-            visited.push(cursor.pos);
+        if !visited.contains(&cursor) {
+            visited.push(cursor.clone());
+        } else {
+            return None;
         }
 
-        println!("{}: {:?}", visited.len(), cursor.debug());
+        //println!("{}: {:?}", visited.len(), cursor.debug());
     }
 
-    visited.len()
+    Some(visited)
 }
