@@ -5,6 +5,7 @@ pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
+pub mod day6;
 
 extern crate test;
 
@@ -39,6 +40,12 @@ mod tests {
     fn test_day5() {
         assert!(day5::execute(false) == 4609);
         assert!(day5::execute(true) == 5723);
+    }
+
+    #[test]
+    fn test_day6() {
+        assert!(day6::execute(false) == 5461);
+        //assert!(day6::execute(true) == 5723);
     }
 }
 
