@@ -5,6 +5,11 @@ enum Operator {
     Concatenate,
 }
 
+struct SInput {
+    first: usize,
+    numbers: Vec<usize>,
+}
+
 pub fn execute(is_part_two: bool) -> usize {
     if is_part_two {
         part_two()
@@ -17,9 +22,9 @@ pub fn part_one() -> usize {
     let input = include_str!("../input/day7.txt");
 
     // split
-    let mut total = 0;
+    let mut inputs = Vec::new();
     for line in input.lines() {
-        // println!("> line: {}", line);
+        //println!("> line: {}", line);
         let splits = line.split(": ").collect::<Vec<&str>>();
         let first: usize = splits[0].parse().unwrap();
         let numbers: Vec<usize> = splits[1]
@@ -27,32 +32,22 @@ pub fn part_one() -> usize {
             .map(|x| x.parse().unwrap())
             .collect();
 
+        inputs.push(SInput { first, numbers });
+    }
+
+    let mut total = 0;
+
+    for input in inputs {
+        let first = input.first;
+        let numbers = input.numbers;
+
         let num_len = numbers.len() - 1;
         let num_perms = 2_u32.pow(num_len as u32) as usize;
 
-        let mut tries = Vec::new();
-        (0..num_perms).for_each(|i| {
-            // get binary representation of i
-            let binary = format!("{i:0width$b}", width = num_len);
-
-            let bin = binary
-                .chars()
-                .map(|c| {
-                    if c == '0' {
-                        Operator::Add
-                    } else {
-                        Operator::Multiply
-                    }
-                })
-                .collect::<Vec<Operator>>();
-
-            tries.push(bin.clone());
-        });
-
         let mut found = false;
-        for seq in tries {
+        for i in 0..num_perms {
             let mut result = numbers[0];
-            for (k, o) in seq.iter().enumerate() {
+            for (k, o) in to_base2_op(i, num_len).iter().enumerate() {
                 match o {
                     Operator::Add => {
                         result += numbers[k + 1];
@@ -62,11 +57,10 @@ pub fn part_one() -> usize {
                     }
                     Operator::Concatenate => todo!(),
                 }
-            }
 
-            //println!("\t{i}: {i:0width$b} result: {}", result, width = num_len);
-            if result > first {
-                continue;
+                if result >= first {
+                    break;
+                }
             }
 
             if result == first {
@@ -85,19 +79,52 @@ pub fn part_one() -> usize {
     total
 }
 
-fn to_base3(v: usize, len: usize) -> String {
-    let mut b = String::new();
+// fn to_base3(v: usize, len: usize) -> String {
+//     let mut b = String::new();
+//     let mut r = v;
+//     for i in (0..len).rev() {
+//         let base = 3_usize.pow(i as u32);
+//         if r >= 2 * base {
+//             r -= 2 * base;
+//             b.push('2');
+//         } else if r >= base {
+//             r -= base;
+//             b.push('1');
+//         } else {
+//             b.push('0');
+//         }
+//     }
+//     b
+// }
+
+fn to_base2_op(v: usize, len: usize) -> Vec<Operator> {
+    let mut b = vec![];
+    let mut r = v;
+    for i in (0..len).rev() {
+        let base = 2_usize.pow(i as u32);
+        if r >= base {
+            r -= base;
+            b.push(Operator::Multiply);
+        } else {
+            b.push(Operator::Add);
+        }
+    }
+    b
+}
+
+fn to_base3_op(v: usize, len: usize) -> Vec<Operator> {
+    let mut b = vec![];
     let mut r = v;
     for i in (0..len).rev() {
         let base = 3_usize.pow(i as u32);
         if r >= 2 * base {
             r -= 2 * base;
-            b.push('2');
+            b.push(Operator::Concatenate);
         } else if r >= base {
             r -= base;
-            b.push('1');
+            b.push(Operator::Multiply);
         } else {
-            b.push('0');
+            b.push(Operator::Add);
         }
     }
     b
@@ -107,7 +134,7 @@ pub fn part_two() -> usize {
     let input = include_str!("../input/day7.txt");
 
     // split
-    let mut total = 0;
+    let mut inputs = Vec::new();
     for line in input.lines() {
         //println!("> line: {}", line);
         let splits = line.split(": ").collect::<Vec<&str>>();
@@ -117,36 +144,22 @@ pub fn part_two() -> usize {
             .map(|x| x.parse().unwrap())
             .collect();
 
+        inputs.push(SInput { first, numbers });
+    }
+
+    let mut total = 0;
+
+    for input in inputs {
+        let first = input.first;
+        let numbers = input.numbers;
+
         let num_len = numbers.len() - 1;
         let num_perms = 3_usize.pow(num_len as u32);
 
-        let mut tries = Vec::new();
-        (0..num_perms).for_each(|i| {
-            // get binary representation of i
-            let t = to_base3(i, num_len);
-            //println!("t: {}", t);
-
-            let bin = t
-                .chars()
-                .map(|c| {
-                    if c == '2' {
-                        Operator::Add
-                    } else if c == '1' {
-                        Operator::Multiply
-                    } else {
-                        Operator::Concatenate
-                    }
-                })
-                .collect::<Vec<Operator>>();
-
-            //println!("bin: {:?}", bin);
-            tries.push(bin.clone());
-        });
-
         let mut found = false;
-        for bin in tries {
+        for i in 0..num_perms {
             let mut result = numbers[0];
-            for (k, o) in bin.iter().enumerate() {
+            for (k, o) in to_base3_op(i, num_len).iter().enumerate() {
                 match o {
                     Operator::Add => {
                         result += numbers[k + 1];
@@ -158,11 +171,10 @@ pub fn part_two() -> usize {
                         result = format!("{}{}", result, numbers[k + 1]).parse().unwrap()
                     }
                 }
-            }
 
-            //println!("\t{i}: {i:0width$b} result: {}", result, width = num_len);
-            if result > first {
-                continue;
+                if result >= first {
+                    break;
+                }
             }
 
             if result == first {
@@ -175,8 +187,6 @@ pub fn part_two() -> usize {
             total += first;
         }
     }
-
-    //println!("Correct lines: {:?}", correct_lines);
 
     total
 }
