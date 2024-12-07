@@ -52,7 +52,7 @@ mod tests {
     #[test]
     fn test_day7() {
         assert!(day7::execute(false) == 3119088655389);
-        //assert!(day6::execute(true) == 1836);
+        assert!(day7::execute(true) == 264184041398847);
     }
 }
 
@@ -119,6 +119,11 @@ mod benches {
 
     #[bench]
     fn bench_day7p1(b: &mut Bencher) {
+        b.iter(|| day7::execute(false));
+    }
+
+    #[bench]
+    fn bench_day7p2(b: &mut Bencher) {
         b.iter(|| day7::execute(false));
     }
 }
