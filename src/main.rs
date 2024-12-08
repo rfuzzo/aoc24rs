@@ -1,6 +1,6 @@
-use aoc24rs::day7::execute;
+use aoc24rs::day8::execute;
 
 fn main() {
     println!("{}", execute(false));
-    println!("{}", execute(true));
+    //println!("{}", execute(true));
 }
