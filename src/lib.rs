@@ -59,7 +59,7 @@ mod tests {
     #[test]
     fn test_day8() {
         assert!(day8::execute(false) == 323);
-        //assert!(day8::execute(true) == 264184041398847);
+        assert!(day8::execute(true) == 1077);
     }
 }
 
