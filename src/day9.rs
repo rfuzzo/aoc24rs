@@ -11,8 +11,8 @@ pub fn execute(is_part_two: bool) -> usize {
 fn part_two() -> usize {
     let input = include_str!("../input/day9.txt");
 
-    //let mut files_id: usize = 0;
-    let mut spaces = Vec::new();
+    let mut files_id: usize = 0;
+    let mut files_count = HashMap::new();
     let mut files = Vec::new();
 
     for (i, c) in input.chars().enumerate() {
@@ -24,100 +24,87 @@ fn part_two() -> usize {
 
         // even
         if i % 2 == 0 {
-            // for _j in 0..b {
-            //     files.push(Some(files_id));
-            // }
-            files.push(b);
-            //files_id += 1;
+            for _j in 0..b {
+                files.push(Some(files_id));
+            }
+            files_count.insert(files_id, b);
+
+            files_id += 1;
         } else {
-            // for _j in 0..b {
-            //     files.push(None);
-            // }
-            spaces.push(b);
+            for _j in 0..b {
+                files.push(None);
+            }
         }
     }
 
-    // println!("files: {:?}", files);
-    // println!("space: {:?}", spaces);
+    // println!("files_id: {:?}", files_id);
+    // println!("files_count: {:?}", files_count);
 
-    let mut new_idices: HashMap<usize, Vec<usize>> = HashMap::new();
-    let files_len = files.len();
-    for (i, file) in files.iter().rev().enumerate() {
-        //println!("file: {}", file);
-        let idx = files_len - 1 - i;
-        if idx == 0 {
-            break;
-        }
-        //println!("idx: {}", idx);
+    // for f in files.iter() {
+    //     if let Some(d) = f {
+    //         print!("{}", d);
+    //     } else {
+    //         print!(".");
+    //     }
+    // }
+    // println!();
 
-        for j in 0..idx {
-            let space = &mut spaces[j];
+    let n = files.len();
+    // println!("n: {}", n);
+    for i in (1..files_id).rev() {
+        // println!("i: {}", i);
 
-            if space.to_owned() >= *file {
-                // we can move it
-                *space -= file;
-
-                // update the new indices
-                //println!("idx: {}, j: {}", idx, j);
-                assert!(idx > j);
-                if let Some(x) = new_idices.get_mut(&j) {
-                    x.push(idx);
-                } else {
-                    new_idices.insert(j, vec![idx]);
+        let mut idx_end = 0;
+        for j in (0..n).rev() {
+            if let Some(d) = files[j] {
+                if d == i {
+                    idx_end = j;
+                    break;
                 }
+            }
+        }
+        let len = *files_count.get(&i).unwrap() as usize;
+        let idx_start = idx_end - len;
+        //println!(" idx_start: {}, idx_end: {}", idx_start, idx_end);
+
+        for (j, window) in files
+            .iter()
+            .take(idx_start)
+            .collect::<Vec<_>>()
+            .windows(len)
+            .enumerate()
+        {
+            if window.iter().all(|x| x.is_none()) {
+                //println!(" window: {}-{}", j, j + len);
+
+                // insert
+                for k in j..j + len {
+                    files[k] = Some(i);
+                }
+
+                // remove
+                for k in idx_start + 1..=idx_end {
+                    files[k] = None;
+                }
+
+                // for f in files.iter() {
+                //     if let Some(d) = f {
+                //         print!("{}", d);
+                //     } else {
+                //         print!(".");
+                //     }
+                // }
+                // println!();
 
                 break;
             }
         }
     }
 
-    println!("new_idices: {:?}", new_idices);
-    //println!("space: {:?}", spaces);
-
-    // collect
-    let mut was_moved = Vec::new();
-    let mut output: String = String::new();
-
-    for i in 0..files.len() {
-        if !was_moved.contains(&i) {
-            let file: u8 = files[i];
-            for _j in 0..file {
-                output += &i.to_string();
-            }
-        } else {
-            let file: u8 = files[i];
-            for _j in 0..file {
-                output += ".";
-            }
-        }
-
-        if let Some(to_move) = new_idices.get(&i) {
-            for j in to_move {
-                let file: u8 = files[*j];
-                for _k in 0..file {
-                    output += &j.to_string();
-                }
-                was_moved.push(*j);
-            }
-        }
-
-        if i < spaces.len() {
-            let space = spaces[i];
-            for _i in 0..space {
-                output += ".";
-            }
-        }
-    }
-
-    println!("output: {:?}", output);
-
     let mut total = 0;
-    for (i, c) in output.chars().enumerate() {
-        if c == '.' {
-            continue;
-        } else {
-            let c = c.to_digit(10).unwrap() as usize;
-            total += i * c;
+    for (i, f) in files.iter().enumerate() {
+        if let Some(d) = f {
+            total += i * d;
         }
     }
 
