@@ -66,8 +66,11 @@ mod tests {
     #[test]
     fn test_day9() {
         assert!(day9::execute(false) == 6323641412437);
-        //assert!(day9::execute(true) == 1077);
+        //assert!(day9::execute(true) == 167925733834); // too low
     }
+
+    //167925733834
+    //85613407812
 }
 
 #[cfg(test)]
