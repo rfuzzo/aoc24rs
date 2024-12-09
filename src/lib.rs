@@ -8,6 +8,7 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+pub mod day9;
 
 extern crate test;
 
@@ -60,6 +61,12 @@ mod tests {
     fn test_day8() {
         assert!(day8::execute(false) == 323);
         assert!(day8::execute(true) == 1077);
+    }
+
+    #[test]
+    fn test_day9() {
+        assert!(day9::execute(false) == 6323641412437);
+        //assert!(day9::execute(true) == 1077);
     }
 }
 
@@ -133,7 +140,7 @@ mod benches {
         b.iter(|| day7::execute(false));
     }
 
-    */
+
 
     #[bench]
     fn bench_day8p1(b: &mut Bencher) {
@@ -143,5 +150,17 @@ mod benches {
     #[bench]
     fn bench_day8p2(b: &mut Bencher) {
         b.iter(|| day8::execute(false));
+    }
+
+    */
+
+    #[bench]
+    fn bench_day9p1(b: &mut Bencher) {
+        b.iter(|| day9::execute(false));
+    }
+
+    #[bench]
+    fn bench_day9p2(b: &mut Bencher) {
+        b.iter(|| day9::execute(false));
     }
 }
