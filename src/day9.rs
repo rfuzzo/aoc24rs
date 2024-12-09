@@ -64,8 +64,8 @@ fn part_two() -> usize {
             }
         }
         let len = *files_count.get(&i).unwrap() as usize;
-        let idx_start = idx_end - len;
-        //println!(" idx_start: {}, idx_end: {}", idx_start, idx_end);
+        let idx_start = idx_end - len + 1;
+        // println!(" idx_start: {}, idx_end: {}", idx_start, idx_end);
 
         for (j, window) in files
             .iter()
@@ -75,16 +75,16 @@ fn part_two() -> usize {
             .enumerate()
         {
             if window.iter().all(|x| x.is_none()) {
-                //println!(" window: {}-{}", j, j + len);
+                // println!(" window: {}-{}", j, j + len);
 
                 // insert
-                for k in j..j + len {
-                    files[k] = Some(i);
+                for item in files.iter_mut().skip(j).take(len) {
+                    *item = Some(i);
                 }
 
                 // remove
-                for k in idx_start + 1..=idx_end {
-                    files[k] = None;
+                for item in files.iter_mut().take(idx_end + 1).skip(idx_start) {
+                    *item = None;
                 }
 
                 // for f in files.iter() {
